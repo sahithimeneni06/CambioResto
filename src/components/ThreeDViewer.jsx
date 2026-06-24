@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, Suspense } from 'react';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RotateCw, ZoomIn, Info } from 'lucide-react';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { MeshoptDecoder } from 'meshoptimizer';
 
 // ─── Error Boundary ────────────────────────────────
 class ModelErrorBoundary extends React.Component {
@@ -29,27 +31,20 @@ class ModelErrorBoundary extends React.Component {
 
 // ─── GLB Model Loader (no infinite loops) ──────────
 function GltfModel({ path }) {
-  const [error, setError] = useState(false);
-
-  // useLoader does NOT throw; it calls the error callback.
   const gltf = useLoader(
     GLTFLoader,
     path,
-    undefined, // no loader config
-    (error) => {
-      console.error('❌ GLTF load error:', path, error);
-      setError(true);
+    (loader) => {
+      loader.setMeshoptDecoder(MeshoptDecoder);
+
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath(
+        'https://www.gstatic.com/draco/versioned/decoders/1.5.6/'
+      );
+
+      loader.setDRACOLoader(dracoLoader);
     }
   );
-
-  if (error || !gltf) {
-    return (
-      <mesh>
-        <boxGeometry args={[0.8, 0.8, 0.8]} />
-        <meshStandardMaterial color="#cda45e" />
-      </mesh>
-    );
-  }
 
   return <primitive object={gltf.scene} scale={1.5} />;
 }
