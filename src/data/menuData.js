@@ -18,7 +18,7 @@ export const menuItems = [
     description: 'Stone-baked pizza topped with fresh buffalo mozzarella, vine-ripened tomatoes, sweet basil, and a drizzle of cold-pressed olive oil.',
     image: 'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?q=80&w=600&auto=format&fit=crop',
     modelType: 'pizza',
-    glbPath: 'public/models/Hitem3d-1782282461764.glb', 
+    glbPath: 'public/models/pizza-optimized.glb', 
     customizations: {
       type: 'Crust Type',
       options: ['thin crust', 'sourdough', 'gluten-free']
